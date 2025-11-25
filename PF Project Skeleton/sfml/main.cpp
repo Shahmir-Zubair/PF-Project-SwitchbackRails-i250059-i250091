@@ -1,4 +1,4 @@
-#include "app.h"
+// #include "app.h"
 #include "../core/simulation_state.h"
 #include "../core/simulation.h"
 #include "../core/io.h"
@@ -19,5 +19,11 @@
 // statistics. Returns 0 on success, 1 on error (e.g., failed to load level
 // file or initialize application).
 // ----------------------------------------------------------------------------
-int main() {
+int main() 
+{
+    loadLevelFile();
+    print_level();
+    cout<<endl<<"_____________________________"<<endl;
+    loadLevelFile("complex_network.lvl");
+    print_level();
 }

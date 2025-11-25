@@ -1,5 +1,6 @@
 #ifndef SIMULATION_STATE_H
 #define SIMULATION_STATE_H
+#include <string>
 
 // ============================================================================
 // SIMULATION_STATE.H - Global constants and state
@@ -11,7 +12,7 @@
 // GRID CONSTANTS
 // ----------------------------------------------------------------------------
 extern int ROWS, COLS;
-
+extern char** GRID;
 // ----------------------------------------------------------------------------
 // TRAIN CONSTANTS
 // ----------------------------------------------------------------------------
@@ -42,12 +43,19 @@ extern int ROWS, COLS;
 // ----------------------------------------------------------------------------
 // GLOBAL STATE: TRAINS
 // ----------------------------------------------------------------------------
-
+extern int** TRAINS;
+extern int TRAIN_COUNT;
 
 // ----------------------------------------------------------------------------
 // GLOBAL STATE: SWITCHES (A-Z mapped to 0-25)
 // ----------------------------------------------------------------------------
-
+extern int SWITCH_COUNT;
+extern char* LETTER;
+extern std::string* MODE;
+extern int* INIT;
+extern int** K_VALUES;
+extern std::string* STATE0;
+extern std::string* STATE1;
 
 // ----------------------------------------------------------------------------
 // GLOBAL STATE: SPAWN POINTS
@@ -67,7 +75,8 @@ extern int ROWS, COLS;
 // ----------------------------------------------------------------------------
 // GLOBAL STATE: METRICS
 // ----------------------------------------------------------------------------
-
+extern int SEED;
+extern std::string WEATHER, LVL_NAME;
 
 // ----------------------------------------------------------------------------
 // GLOBAL STATE: EMERGENCY HALT
@@ -78,6 +87,8 @@ extern int ROWS, COLS;
 // INITIALIZATION FUNCTION
 // ----------------------------------------------------------------------------
 // Resets all state before loading a new level.
+void allocateGrid();
+void allocateSwitchesTrains();
 int initializeSimulationState();
 
 #endif
