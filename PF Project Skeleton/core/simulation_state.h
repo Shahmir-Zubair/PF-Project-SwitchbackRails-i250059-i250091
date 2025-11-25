@@ -10,7 +10,7 @@
 // ----------------------------------------------------------------------------
 // GRID CONSTANTS
 // ----------------------------------------------------------------------------
-
+extern int ROWS, COLS;
 
 // ----------------------------------------------------------------------------
 // TRAIN CONSTANTS
@@ -78,6 +78,6 @@
 // INITIALIZATION FUNCTION
 // ----------------------------------------------------------------------------
 // Resets all state before loading a new level.
-void initializeSimulationState();
+int initializeSimulationState();
 
 #endif

@@ -1,24 +1,30 @@
 #include "simulation_state.h"
+#include <iostream>
+#include <fstream>
 #include <cstring>
+using namespace std;
 
 // ============================================================================
 // SIMULATION_STATE.CPP - Global state definitions
 // ============================================================================
 
+
+
 // ----------------------------------------------------------------------------
 // GRID
 // ----------------------------------------------------------------------------
-
-
+int ROWS, COLS;
+char** GRID = NULL;
 // ----------------------------------------------------------------------------
 // TRAINS
 // ----------------------------------------------------------------------------
-
-
+int** TRAINS = NULL;
+int TRAIN_COUNT = 0;
 // ----------------------------------------------------------------------------
 // SWITCHES
 // ----------------------------------------------------------------------------
-
+int SWITCH_COUNT = 0;
+int** SWITCHES = NULL;
 // ----------------------------------------------------------------------------
 // SPAWN AND DESTINATION POINTS
 // ----------------------------------------------------------------------------
@@ -30,7 +36,8 @@
 // ----------------------------------------------------------------------------
 // METRICS
 // ----------------------------------------------------------------------------
-
+int SEED;
+string WEATHER, LVL_NAME;
 // ----------------------------------------------------------------------------
 // EMERGENCY HALT
 // ----------------------------------------------------------------------------
@@ -43,5 +50,169 @@
 // ----------------------------------------------------------------------------
 // Called before loading a new level.
 // ----------------------------------------------------------------------------
-void initializeSimulationState() {
+void allocateGrid() 
+{
+    GRID = new char*[ROWS];
+    for (int i = 0; i < ROWS; i++) 
+    {
+        GRID[i] = new char[COLS];
+    }
+}
+void allocateSwitchesTrains() 
+{
+    TRAINS = new int*[TRAIN_COUNT];
+    for(int i = 0; i < TRAIN_COUNT; i++) 
+    {
+        TRAINS[i] = new int[5]; // tick, x, y, dir, color
+    }
+    SWITCHES = new int*[SWITCH_COUNT];
+    for(int i = 0; i < SWITCH_COUNT; i++)
+        SWITCHES[i] = new int[9];
+}
+
+
+int initializeSimulationState() 
+{
+    string path = "../data/levels/", file_name = "easy_level.lvl";
+    
+    fstream file(path + file_name);
+
+    if (!file.is_open()) 
+    {
+        cout<< "Error: could not open .lvl file"<<endl;
+        return 1;
+    }
+    
+    string line;
+    int line_number = 0;
+    while(getline(file, line))
+    {
+        line_number++;
+
+        if(line_number==2)
+            LVL_NAME = line;
+        if(line_number==5)
+            ROWS = stoi(line);
+        if(line_number==8)
+            COLS = stoi(line);
+        if(line_number==11)
+            SEED = stoi(line);
+        if(line_number==14)
+            WEATHER = line;
+        if(line_number==17)
+            break;
+        
+    }
+    allocateGrid();
+
+    for (int r = 0; r < ROWS; r++) 
+    {
+        if (!getline(file, line)) line = "";
+
+        // pad line if shorter
+        while (line.size() < COLS) line += ' ';
+
+        for (int c = 0; c < COLS; c++) 
+        {
+            GRID[r][c] = line[c];
+        }
+    }
+    file.close();
+
+    ifstream file1(path + file_name);
+    line_number = 0;
+    bool switch_flag = false;
+    while(getline(file1, line))
+    {
+        line_number++;
+        if(line=="SWITCHES:")
+        {
+            line_number = 0;
+            switch_flag = true;
+        }
+        if(switch_flag)
+        {
+            if(line.size()==0)
+                break;
+            else
+                SWITCH_COUNT++;
+        }
+    }
+
+    getline(file1, line);
+    while(getline(file1, line))
+        TRAIN_COUNT++;
+    SWITCH_COUNT--;
+    TRAIN_COUNT--;
+
+    file1.close();
+    allocateSwitchesTrains();
+    ifstream file2(path + file_name);
+
+    // fast-forward to SWITCHES:
+    while (getline(file2, line)) {
+        if (line == "SWITCHES:") break;
+    }
+
+    string current = "";
+    for (int i = 0; i < line.size(); i++) 
+    {
+        char c = line[i];
+        if (c == ' ' || c == '\t') 
+        {
+            if (current != "") 
+            {
+                SWITCHES[wordCount++] = current;
+                current.clear();
+            }
+        } 
+        else 
+        {
+            current += c;
+        }
+    }
+    if (current != "") {
+        SWITCHES[wordCount++] = current; // add last word
+    }
+
+    // fast-forward to TRAINS:
+    while (getline(file2, line)) {
+        if (line == "TRAINS:") break;
+    }
+
+    // Read actual train lines
+    int idx = 0;
+    while (getline(file2, line)) {
+        if (line.length() == 0) continue;
+
+        for(int i=0; i<=8; i++)
+            if(i%2==0)
+            {
+                TRAINS[idx][i/2] = line[i] - '0';
+            }
+
+        idx++;
+    }
+    return 0;
+}
+
+int main()
+{
+    initializeSimulationState();
+    // cout<<LVL_NAME<<endl;
+    // cout<<ROWS<<endl;
+    // cout<<COLS<<endl;
+    // cout<<SEED<<endl;
+    // cout<<WEATHER<<endl;
+    // cout<<SWITCH_COUNT<<endl;
+    // cout<<TRAIN_COUNT<<endl;
+    for(int i=0; i<TRAIN_COUNT; i++)
+    {
+        for(int j=0; j<5; j++)
+            cout<<TRAINS[i][j]<<" ";
+        cout<<endl;
+    }
+    delete[] TRAINS;
+    delete[] SWITCHES;
+
 }
