@@ -94,10 +94,17 @@ bool loadLevelFile(string file_name="easy_level.lvl")
 
         for (int c = 0; c < COLS; c++) 
         {
-            GRID[r][c] = line[c];
+
+            GRID[r][c] = line[c];  
+            if(isSpawnPoint(r, c))
+                SPAWN_COUNT++;
+            if(isDestinationPoint(r, c))
+                DEST_COUNT++; 
         }
     }
     file.close();
+    
+    initializeSpawnDest();
 
     cout<<"Opening FILE1"<<endl;
     ifstream file1(path + file_name);
@@ -279,6 +286,19 @@ void writeMetrics() {
 
 // int main()
 // {
-//     loadLevelFile("complex_network.lvl");
+//     loadLevelFile();
 //     print_level();
+
+//     cout<<endl<<"Spawns: "<<endl;
+//     for(int i=0; i<SPAWN_COUNT; i++)
+//     {
+//         cout<<SPAWN_POINTS[i][0]<<", "<<SPAWN_POINTS[i][1]<<endl;
+//     }
+
+//     cout<<endl<<"Destinations: "<<endl;
+//     for(int i=0; i<DEST_COUNT; i++)
+//     {
+//         cout<<DEST_POINTS[i][0]<<", "<<DEST_POINTS[i][1]<<endl;
+//     }
+
 // }

@@ -74,4 +74,5 @@ bool isDestinationPoint(int r, int c) {
 // Returns true if toggled successfully.
 // ----------------------------------------------------------------------------
 bool toggleSafetyTile() {
+    return true;
 }

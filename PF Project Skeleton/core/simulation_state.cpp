@@ -1,4 +1,5 @@
 #include "simulation_state.h"
+#include "grid.h"
 #include <iostream>
 #include <fstream>
 #include <cstring>
@@ -34,6 +35,10 @@ string* STATE1 = NULL;
 // ----------------------------------------------------------------------------
 // SPAWN AND DESTINATION POINTS
 // ----------------------------------------------------------------------------
+int SPAWN_COUNT = 0;
+int DEST_COUNT = 0;
+int** SPAWN_POINTS = NULL;
+int** DEST_POINTS = NULL;
 
 // ----------------------------------------------------------------------------
 // SIMULATION PARAMETERS
@@ -66,6 +71,7 @@ void allocateGrid()
         for (int j = 0; j < COLS; j++) 
             GRID[i][j] = ' ';
     }
+
 }
 void allocateSwitchesTrains() 
 {
@@ -85,13 +91,47 @@ void allocateSwitchesTrains()
     STATE0 = new string[SWITCH_COUNT];
     STATE1 = new string[SWITCH_COUNT];
 }
+void initializeSpawnDest()
+{
+
+    SPAWN_POINTS = new int*[SPAWN_COUNT];
+    for(int i = 0; i<SPAWN_COUNT; i++)
+        SPAWN_POINTS[i] = new int[2]; // r and c
+
+    DEST_POINTS = new int*[DEST_COUNT];
+    for(int i = 0; i<DEST_COUNT; i++)
+        DEST_POINTS[i] = new int[2]; // r and c
+
+    int spawns = 0;
+    int dests = 0;
+    for(int r=0; r<ROWS; r++)
+    {
+        for(int c=0; c<COLS; c++)
+        {
+            if(isSpawnPoint(r, c))
+            {
+                SPAWN_POINTS[spawns][0] = r;
+                SPAWN_POINTS[spawns][1] = c;
+                spawns++;
+            }    
+            if(isDestinationPoint(r, c))
+            {
+                DEST_POINTS[dests][0] = r;
+                DEST_POINTS[dests][1] = c;
+                dests++;
+            }      
+        }
+    }
+
+}
 int initializeSimulationState()
 {
     // Free old allocations if they exist
-    if (GRID) 
+    if(GRID) 
     {
         for (int i = 0; i < ROWS; i++) 
             delete[] GRID[i];
+
         delete[] GRID;
     }
     GRID = nullptr;
@@ -100,9 +140,28 @@ int initializeSimulationState()
     {
         for (int i = 0; i < TRAIN_COUNT; i++) 
             delete[] TRAINS[i];
+
         delete[] TRAINS;
     }
     TRAINS = nullptr;
+
+    if(SPAWN_POINTS)
+    {
+        for(int i=0; i<SPAWN_COUNT; i++)
+            delete[] SPAWN_POINTS[i];
+
+        delete[] SPAWN_POINTS;
+    }
+    SPAWN_POINTS = nullptr;
+    
+    if(DEST_POINTS)
+    {
+        for(int i=0; i<DEST_COUNT; i++)
+            delete[] DEST_POINTS[i];
+
+        delete[] DEST_POINTS;
+    }
+    DEST_POINTS = nullptr;
 
     delete[] LETTER;   
     LETTER = nullptr;
@@ -129,6 +188,9 @@ int initializeSimulationState()
 
     TRAIN_COUNT = 0;
     SWITCH_COUNT = 0;
+    int SPAWN_COUNT = 0;
+    int DEST_COUNT = 0;
+
 
     return 0;
 }

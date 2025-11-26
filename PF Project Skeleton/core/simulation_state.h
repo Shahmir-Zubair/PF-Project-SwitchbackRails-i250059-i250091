@@ -60,12 +60,15 @@ extern std::string* STATE1;
 // ----------------------------------------------------------------------------
 // GLOBAL STATE: SPAWN POINTS
 // ----------------------------------------------------------------------------
+extern int SPAWN_COUNT;
+extern int** SPAWN_POINTS;
 
 
 // ----------------------------------------------------------------------------
 // GLOBAL STATE: DESTINATION POINTS
 // ----------------------------------------------------------------------------
-
+extern int DEST_COUNT;
+extern int** DEST_POINTS;
 
 // ----------------------------------------------------------------------------
 // GLOBAL STATE: SIMULATION PARAMETERS
@@ -89,6 +92,7 @@ extern std::string WEATHER, LVL_NAME;
 // Resets all state before loading a new level.
 void allocateGrid();
 void allocateSwitchesTrains();
+void initializeSpawnDest();
 int initializeSimulationState();
 
 #endif
