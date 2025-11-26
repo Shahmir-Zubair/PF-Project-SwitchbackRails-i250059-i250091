@@ -65,7 +65,7 @@ bool isSpawnPoint(int r, int c) {
 // Returns true if x,y is a destination.
 // ----------------------------------------------------------------------------
 bool isDestinationPoint(int r, int c) {
-    return GRID[r][c] == 'D';
+    return (GRID[r][c] == 'D');
 }
 
 // ----------------------------------------------------------------------------

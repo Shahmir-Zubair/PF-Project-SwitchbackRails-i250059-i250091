@@ -5,6 +5,8 @@
 #include "io.h"
 #include <cstdlib>
 #include <ctime>
+#include <iostream>
+using namespace std;
 
 // ============================================================================
 // SIMULATION.CPP - Implementation of main simulation logic
@@ -17,8 +19,10 @@ int TICK;
 void initializeSimulation() 
 {
     TICK = 0;
-    loadLevelFile();
+    
+    initializeSimulationState();
     initializeLogFiles();
+    loadLevelFile();
 }
 
 // ----------------------------------------------------------------------------
@@ -26,6 +30,9 @@ void initializeSimulation()
 // ----------------------------------------------------------------------------
 
 void simulateOneTick(int tick_no) {
+
+    cout<<"Tick: "<<tick_no<<endl;
+    print_grid();
 }
 
 // ----------------------------------------------------------------------------
@@ -33,4 +40,5 @@ void simulateOneTick(int tick_no) {
 // ----------------------------------------------------------------------------
 
 bool isSimulationComplete() {
+
 }

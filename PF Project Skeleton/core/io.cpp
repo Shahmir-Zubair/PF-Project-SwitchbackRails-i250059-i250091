@@ -19,36 +19,36 @@ using namespace std;
 // Load a .lvl file into global state.
 // ----------------------------------------------------------------------------
 
-void print_level()
+void print_grid()
 {
-    cout<<"IN PRINTING"<<endl;
-    cout<<LVL_NAME<<endl;
-    cout<<ROWS<<endl;
-    cout<<COLS<<endl;
-    cout<<SEED<<endl;
-    cout<<WEATHER<<endl;
-    cout<<TRAIN_COUNT<<endl;
-    cout<<SWITCH_COUNT<<endl;
+    // cout<<"IN PRINTING"<<endl;
+    // cout<<LVL_NAME<<endl;
+    // cout<<ROWS<<endl;
+    // cout<<COLS<<endl;
+    // cout<<SEED<<endl;
+    // cout<<WEATHER<<endl;
+    // cout<<TRAIN_COUNT<<endl;
+    // cout<<SWITCH_COUNT<<endl;
     for(int i=0; i<ROWS; i++)
     {
         for(int j=0; j<COLS; j++)
             cout<<GRID[i][j];
         cout<<endl;
     }
-    for(int i=0; i<TRAIN_COUNT; i++)
-    {
-        for(int j=0; j<5; j++)
-            cout<<TRAINS[i][j]<<" ";
-        cout<<endl;
-    }
-    for(int i=0; i < SWITCH_COUNT; i++)
-    {
-        cout<<LETTER[i]<<" "<<MODE[i]<<" "<<INIT[i]<<" "<<K_VALUES[i][0]<<" "<<K_VALUES[i][1]<<" "<<K_VALUES[i][2]<<" "<<K_VALUES[i][3]<<" "<<STATE0[i]<<" "<<STATE1[i]<<endl;
-    }
+    // for(int i=0; i<TRAIN_COUNT; i++)
+    // {
+    //     for(int j=0; j<5; j++)
+    //         cout<<TRAINS[i][j]<<" ";
+    //     cout<<endl;
+    // }
+    // for(int i=0; i < SWITCH_COUNT; i++)
+    // {
+    //     cout<<LETTER[i]<<" "<<MODE[i]<<" "<<INIT[i]<<" "<<K_VALUES[i][0]<<" "<<K_VALUES[i][1]<<" "<<K_VALUES[i][2]<<" "<<K_VALUES[i][3]<<" "<<STATE0[i]<<" "<<STATE1[i]<<endl;
+    // }
 }
 
 
-bool loadLevelFile(string file_name="easy_level.lvl") 
+bool loadLevelFile(string file_name) 
 {
     string path = "../data/levels/";
     
@@ -106,7 +106,6 @@ bool loadLevelFile(string file_name="easy_level.lvl")
     
     initializeSpawnDest();
 
-    cout<<"Opening FILE1"<<endl;
     ifstream file1(path + file_name);
     line_number = 0;
     bool switch_flag = false;
@@ -135,7 +134,6 @@ bool loadLevelFile(string file_name="easy_level.lvl")
 
     file1.close();
     allocateSwitchesTrains();
-    cout<<"Opening FILE2"<<endl;
     ifstream file2(path + file_name);
 
     // fast-forward to SWITCHES:
@@ -258,6 +256,7 @@ void initializeLogFiles()
 // Append tick, train id, position, direction, state to trace.csv.
 // ----------------------------------------------------------------------------
 void logTrainTrace() {
+    
 }
 
 // ----------------------------------------------------------------------------
@@ -283,22 +282,3 @@ void logSignalState() {
 // ----------------------------------------------------------------------------
 void writeMetrics() {
 }
-
-// int main()
-// {
-//     loadLevelFile();
-//     print_level();
-
-//     cout<<endl<<"Spawns: "<<endl;
-//     for(int i=0; i<SPAWN_COUNT; i++)
-//     {
-//         cout<<SPAWN_POINTS[i][0]<<", "<<SPAWN_POINTS[i][1]<<endl;
-//     }
-
-//     cout<<endl<<"Destinations: "<<endl;
-//     for(int i=0; i<DEST_COUNT; i++)
-//     {
-//         cout<<DEST_POINTS[i][0]<<", "<<DEST_POINTS[i][1]<<endl;
-//     }
-
-// }
