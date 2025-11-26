@@ -224,10 +224,26 @@ bool loadLevelFile(string file_name="easy_level.lvl")
 // ----------------------------------------------------------------------------
 // Create/clear CSV logs with headers.
 // ----------------------------------------------------------------------------
-void initializeLogFiles() 
-{
 
+void initializeLogFiles()
+{
+    // trace.csv
+    ofstream traceFile("trace.csv", ios::trunc);
+    traceFile.close();
+
+    // switches.csv
+    ofstream switchesFile("switches.csv", ios::trunc);
+    switchesFile.close();
+
+    // signals.csv
+    ofstream signalsFile("signals.csv", ios::trunc);
+    signalsFile.close();
+
+    // metrics.txt
+    ofstream metricsFile("metrics.txt", ios::trunc);
+    metricsFile.close();
 }
+
 
 // ----------------------------------------------------------------------------
 // LOG TRAIN TRACE
@@ -261,8 +277,8 @@ void logSignalState() {
 void writeMetrics() {
 }
 
-int main()
-{
-    loadLevelFile("complex_network.lvl");
-    print_level();
-}
+// int main()
+// {
+//     loadLevelFile("complex_network.lvl");
+//     print_level();
+// }

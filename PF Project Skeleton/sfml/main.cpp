@@ -1,4 +1,4 @@
-// #include "app.h"
+#include "app.h"
 #include "../core/simulation_state.h"
 #include "../core/simulation.h"
 #include "../core/io.h"
