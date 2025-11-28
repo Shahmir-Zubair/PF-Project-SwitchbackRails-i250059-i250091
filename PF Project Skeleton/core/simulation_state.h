@@ -59,6 +59,10 @@ extern int* INIT;
 extern int** K_VALUES;
 extern std::string* STATE0;
 extern std::string* STATE1;
+extern int** SWITCH_COUNTER_DIR;
+extern int* SWITCH_COUNTER_GLOBAL;  
+extern int* SWITCH_FLIP_QUEUE;
+extern int* SWITCH_STATE;
 
 // ----------------------------------------------------------------------------
 // GLOBAL STATE: SPAWN POINTS

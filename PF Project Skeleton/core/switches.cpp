@@ -27,18 +27,13 @@ void updateSwitchCounters() {
 
         int direction = TRAINS[i][3];
 
-        if(MODE[sindex] == "PIR_DIR")
+        if(MODE[sindex] == "PER_DIR")
         {
-            K_VALUES[sindex][direction]++;
-            SWITCH_COUNT++;
+            SWITCH_COUNTER_DIR[sindex][direction]++;
         }
         else
         {   
-            for(int i=0; i<4; i++)
-            {
-                K_VALUES[sindex][direction]++;
-                SWITCH_COUNT++;
-            }
+            SWITCH_COUNTER_GLOBAL[sindex]++;    
         }
     }
 }
@@ -49,6 +44,28 @@ void updateSwitchCounters() {
 // Queue flips when counters hit K.
 // ----------------------------------------------------------------------------
 void queueSwitchFlips() {
+    for(int i=0; i<SWITCH_COUNT; i++)
+    {
+        if(MODE[i] == "PER_DIR")
+        {
+            for(int j=0; j<4; j++)
+            {
+                if(SWITCH_COUNTER_DIR[i][j] >= K_VALUES[i][j])
+                {
+                    SWITCH_FLIP_QUEUE[i] = 1;        
+                    SWITCH_COUNTER_DIR[i][j] = 0;
+                }
+            }
+        }
+        else 
+        {
+            if(SWITCH_COUNTER_GLOBAL[i] >= K_VALUES[i][0]) 
+            {
+                SWITCH_FLIP_QUEUE[i] = 1;        
+                SWITCH_COUNTER_GLOBAL[i] = 0;
+            }
+        }
+    }
 }
 
 // ----------------------------------------------------------------------------
@@ -57,6 +74,23 @@ void queueSwitchFlips() {
 // Apply queued flips after movement.
 // ----------------------------------------------------------------------------
 void applyDeferredFlips() {
+    for(int i=0; i<SWITCH_COUNT; i++)
+    {
+        if(SWITCH_FLIP_QUEUE[i] == 1)
+        {
+            // Toggle switch state
+            // if(SWITCH_STATE[i] == 0)
+            // {
+            //     SWITCH_STATE[i] = 1;
+            // }
+            // else
+            // {
+            //     SWITCH_STATE[i] = 0;
+            // }
+            SWITCH_STATE[i] = 1 - SWITCH_STATE[i];
+            SWITCH_FLIP_QUEUE[i] = 0;
+        }
+    }
 }
 
 // ----------------------------------------------------------------------------
