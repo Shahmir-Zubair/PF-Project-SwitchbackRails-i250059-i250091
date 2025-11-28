@@ -13,6 +13,34 @@
 // Increment counters for trains entering switches.
 // ----------------------------------------------------------------------------
 void updateSwitchCounters() {
+    for(int i=0;i<TRAIN_COUNT;i++)
+    {
+        int rows = TRAINS[i][1];
+        int cols = TRAINS[i][2];
+
+        if(!isSwitchTile(rows,cols))
+        continue;
+
+        char letter = GRID[rows][cols]; 
+        int sindex = getSwitchIndex(letter);
+
+
+        int direction = TRAINS[i][3];
+
+        if(MODE[sindex] == "PIR_DIR")
+        {
+            K_VALUES[sindex][direction]++;
+            SWITCH_COUNT++;
+        }
+        else
+        {   
+            for(int i=0; i<4; i++)
+            {
+                K_VALUES[sindex][direction]++;
+                SWITCH_COUNT++;
+            }
+        }
+    }
 }
 
 // ----------------------------------------------------------------------------
