@@ -20,8 +20,8 @@ void determineAllRoutes();
 // Compute next position/direction for a train.
 bool determineNextPosition();
 
-// Get next direction on entering a tile.
-int getNextDirection();
+// Get next direction on entering a tile for the given train index.
+int getNextDirection(int train_i);
 
 // Choose best direction at a crossing.
 int getSmartDirectionAtCrossing();

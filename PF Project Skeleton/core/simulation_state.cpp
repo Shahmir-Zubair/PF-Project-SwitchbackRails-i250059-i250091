@@ -52,8 +52,12 @@ int** DEST_POINTS = NULL;
 // ----------------------------------------------------------------------------
 // SIMULATION PARAMETERS
 // ----------------------------------------------------------------------------
-int TICK;
+int TICK=0;
 int SPAWNED_TRAINS=0;
+
+int* next_x = NULL;
+int* next_y = NULL;
+int* next_dir = NULL;
 // ----------------------------------------------------------------------------
 // METRICS
 // ----------------------------------------------------------------------------
@@ -100,6 +104,10 @@ void allocateSwitchesTrains()
     }
     STATE0 = new string[SWITCH_COUNT];
     STATE1 = new string[SWITCH_COUNT];
+
+    int next_x[TRAIN_COUNT];
+    int next_y[TRAIN_COUNT];
+    int next_dir[TRAIN_COUNT];
 }
 void initializeSpawnDest()
 {
@@ -134,9 +142,9 @@ void initializeSpawnDest()
     }
 
 }
-int initializeSimulationState()
-{
+void initializeSimulationState(){
     // Free old allocations if they exist
+
     if(GRID) 
     {
         for (int i = 0; i < ROWS; i++) 
@@ -198,9 +206,9 @@ int initializeSimulationState()
 
     TRAIN_COUNT = 0;
     SWITCH_COUNT = 0;
-    int SPAWN_COUNT = 0;
-    int DEST_COUNT = 0;
-
-
-    return 0;
+    SPAWN_COUNT = 0;
+    DEST_COUNT = 0;
+    SPAWNED_TRAINS = 0;
+    TICK = 0;
+    SEED = 0;
 }

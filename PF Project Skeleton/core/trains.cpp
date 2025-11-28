@@ -9,10 +9,6 @@ using namespace std;
 // TRAINS.CPP - Train logic
 // ============================================================================
 
-// Storage for planned moves (for collisions).
-
-// Previous positions (to detect switch entry).
-
 // ----------------------------------------------------------------------------
 // SPAWN TRAINS FOR CURRENT TICK
 // ----------------------------------------------------------------------------
@@ -41,25 +37,67 @@ void spawnTrainsForTick()
 // ----------------------------------------------------------------------------
 // Compute next position/direction from current tile and rules.
 // ----------------------------------------------------------------------------
-bool determineNextPosition() {
+bool determineNextPosition(int train_i) 
+{
+    int dir = getNextDirection(train_i);
 
+    if(dir == DIR_NONE)
+        return false;
+
+    int x = TRAINS[train_i][1];
+    int y = TRAINS[train_i][2];
+
+    if(dir == DIR_UP)    
+        y--;
+    if(dir == DIR_RIGHT)
+        x++;
+    if(dir == DIR_DOWN)  
+        y++;
+    if(dir == DIR_LEFT)  
+        y++;
+
+    // bounds
+    if(isInBounds(x, y))
+        return false;
+
+    // store next position
+    TRAINS[train_i][1] = x;
+    TRAINS[train_i][2] = y;
+
+    return true;
 }
+
 
 // ----------------------------------------------------------------------------
 // GET NEXT DIRECTION based on current tile and direction
 // ----------------------------------------------------------------------------
 // Return new direction after entering the tile.
 // ----------------------------------------------------------------------------
-int getNextDirection(int train_i, int curr_direction) {
+int getNextDirection(int train_i) {
     int train_x = TRAINS[train_i][1];
     int train_y = TRAINS[train_i][2];
 
-    char curr_tile = GRID[train_x][train_y];
+    int curr_direction = TRAINS[train_i][3]; // Later update with switches
+
+    // TRAINS store positions as [x, y] where x is column and y is row.
+    // GRID is indexed as GRID[row][col], so use [train_y][train_x].
+    char curr_tile = GRID[train_y][train_x];
     if(curr_tile == 'S')
         return TRAINS[train_i][3];
-    else if(curr_tile == '-' || curr_tile == '=')
-        return 
 
+    else if(curr_tile == '-' || curr_tile == '=')
+        return curr_direction;
+
+    else if(curr_tile == '|')
+        return curr_direction;
+
+    else if(curr_tile == '+')
+        return curr_direction;
+        // return getSmartDirectionAtCrossing();
+
+    else if(isSwitchTile(train_y, train_x))
+        return curr_direction;
+        // return getSwitchStateForDirection();
 
     return 0;
 }
@@ -79,6 +117,10 @@ int getSmartDirectionAtCrossing() {
 // Fill next positions/directions for all trains.
 // ----------------------------------------------------------------------------
 void determineAllRoutes() {
+    for(int i=0; i<SPAWNED_TRAINS; i++)
+    {
+        determineNextPosition(i);
+    }
 }
 
 // ----------------------------------------------------------------------------
@@ -87,6 +129,7 @@ void determineAllRoutes() {
 // Move trains; resolve collisions and apply effects.
 // ----------------------------------------------------------------------------
 void moveAllTrains() {
+
 }
 
 // ----------------------------------------------------------------------------
@@ -95,6 +138,7 @@ void moveAllTrains() {
 // Resolve same-tile, swap, and crossing conflicts.
 // ----------------------------------------------------------------------------
 void detectCollisions() {
+    
 }
 
 // ----------------------------------------------------------------------------
