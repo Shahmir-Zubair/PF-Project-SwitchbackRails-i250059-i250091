@@ -16,7 +16,10 @@ extern char** GRID;
 // ----------------------------------------------------------------------------
 // TRAIN CONSTANTS
 // ----------------------------------------------------------------------------
-
+extern const int DIR_UP;
+extern const int DIR_RIGHT;
+extern const int DIR_DOWN;
+extern const int DIR_LEFT;
 
 // ----------------------------------------------------------------------------
 // SWITCH CONSTANTS
@@ -74,6 +77,7 @@ extern int** DEST_POINTS;
 // GLOBAL STATE: SIMULATION PARAMETERS
 // ----------------------------------------------------------------------------
 extern int TICK;
+extern int SPAWNED_TRAINS;
 
 // ----------------------------------------------------------------------------
 // GLOBAL STATE: METRICS

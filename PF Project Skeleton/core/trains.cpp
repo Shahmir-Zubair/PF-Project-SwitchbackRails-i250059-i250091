@@ -31,6 +31,7 @@ void spawnTrainsForTick()
                 cout<<"("<<SPAWN_POINTS[j][0]<<", "<<SPAWN_POINTS[j][1]<<")"<<endl;
             }
             cout<<"Train "<<i<<" spawned at ("<<TRAINS[i][1]<<", "<<TRAINS[i][2]<<")"<<endl<<endl;
+            SPAWNED_TRAINS++;
         }
     }
 }
@@ -41,7 +42,7 @@ void spawnTrainsForTick()
 // Compute next position/direction from current tile and rules.
 // ----------------------------------------------------------------------------
 bool determineNextPosition() {
-    return true;
+
 }
 
 // ----------------------------------------------------------------------------
@@ -49,7 +50,17 @@ bool determineNextPosition() {
 // ----------------------------------------------------------------------------
 // Return new direction after entering the tile.
 // ----------------------------------------------------------------------------
-int getNextDirection() {
+int getNextDirection(int train_i, int curr_direction) {
+    int train_x = TRAINS[train_i][1];
+    int train_y = TRAINS[train_i][2];
+
+    char curr_tile = GRID[train_x][train_y];
+    if(curr_tile == 'S')
+        return TRAINS[train_i][3];
+    else if(curr_tile == '-' || curr_tile == '=')
+        return 
+
+
     return 0;
 }
 
