@@ -1,5 +1,6 @@
 #include "grid.h"
 #include "simulation_state.h"
+#include <iostream>
 
 // ============================================================================
 // GRID.CPP - Grid utilities

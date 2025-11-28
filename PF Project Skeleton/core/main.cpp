@@ -9,11 +9,12 @@ using namespace std;
 
 int main()
 {
-
-    initializeSimulation();
-    simulateOneTick(TICK);
-
-
+    initializeSimulation("easy_level.lvl");
+    while(!isSimulationComplete())
+    {
+        simulateOneTick();
+        TICK++;
+    }
 }
 
 // loadLevelFile();

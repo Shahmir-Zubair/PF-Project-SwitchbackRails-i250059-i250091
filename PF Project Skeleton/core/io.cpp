@@ -29,11 +29,13 @@ void print_grid()
     // cout<<WEATHER<<endl;
     // cout<<TRAIN_COUNT<<endl;
     // cout<<SWITCH_COUNT<<endl;
+
     for(int i=0; i<ROWS; i++)
     {
+        cout<<"[";
         for(int j=0; j<COLS; j++)
             cout<<GRID[i][j];
-        cout<<endl;
+        cout<<"]"<<endl;
     }
     // for(int i=0; i<TRAIN_COUNT; i++)
     // {
@@ -51,8 +53,38 @@ void print_grid()
 bool loadLevelFile(string file_name) 
 {
     string path = "../data/levels/";
+    // fast-forward to MAP:
+    fstream c_rows(path + file_name);
+
+    if (!c_rows.is_open()) 
+    {
+        cout<< "Error: could not open .lvl file"<<endl;
+        return 1;
+    }
+
+    string line;
+    while (getline(c_rows, line)) 
+    {
+        if (line == "MAP:") 
+            break;
+    }
     
-    cout<<"Trying to Open: "<<path+file_name<<endl;
+
+    int rows_count = 0;
+    int max_col = 0;
+    while(getline(c_rows, line)) 
+    {   
+        if (line == "SWITCHES:")
+            break;
+        else if(line.size() > max_col)
+            max_col = line.size();
+        rows_count++;
+    }
+    ROWS = rows_count;
+    COLS = max_col;
+    
+    c_rows.close();
+    // NEXT
     fstream file(path + file_name);
 
     if (!file.is_open()) 
@@ -61,7 +93,6 @@ bool loadLevelFile(string file_name)
         return 1;
     }
     
-    string line;
     int line_number = 0;
     while(getline(file, line))
     {
@@ -69,32 +100,23 @@ bool loadLevelFile(string file_name)
 
         if(line_number==2)
             LVL_NAME = line;
-        if(line_number==5)
-            ROWS = stoi(line);
-        if(line_number==8)
-            COLS = stoi(line);
         if(line_number==11)
             SEED = stoi(line);
         if(line_number==14)
             WEATHER = line;
-        if(line_number==17)
+        if(line_number==16)
             break;
         
     }
-    allocateGrid();
 
-    for (int r = 0; r < ROWS; r++) 
+    allocateGrid();
+    for(int r = 0; r < ROWS; r++) 
     {   
         getline(file, line);
-        if (line == "SWITCHES:")
+        if(line == "SWITCHES:")
             break;
-
-        // pad line if shorter
-        while ((int)line.size() < COLS) line += ' ';
-
-        for (int c = 0; c < COLS; c++) 
+        for(int c = 0; c < line.size(); c++) 
         {
-
             GRID[r][c] = line[c];  
             if(isSpawnPoint(r, c))
                 SPAWN_COUNT++;
@@ -103,7 +125,8 @@ bool loadLevelFile(string file_name)
         }
     }
     file.close();
-    
+    cout<<"________________"<<endl;
+
     initializeSpawnDest();
 
     ifstream file1(path + file_name);
@@ -130,12 +153,11 @@ bool loadLevelFile(string file_name)
     while(getline(file1, line))
         TRAIN_COUNT++;
     SWITCH_COUNT--;
-    TRAIN_COUNT--;
 
     file1.close();
     allocateSwitchesTrains();
     ifstream file2(path + file_name);
-
+    
     // fast-forward to SWITCHES:
     while (getline(file2, line)) 
     {
@@ -179,7 +201,7 @@ bool loadLevelFile(string file_name)
         STATE0[i]   = tokens[7];                           // label for State0
         STATE1[i]   = tokens[8];                           // label for State1
     }
-
+    
     // fast-forward to TRAINS:
     while (getline(file2, line)) 
     {
@@ -219,7 +241,6 @@ bool loadLevelFile(string file_name)
         if(hasToken)
             idx++;
     }
-
     
     return 0;
 }
@@ -233,19 +254,19 @@ bool loadLevelFile(string file_name)
 void initializeLogFiles()
 {
     // trace.csv
-    ofstream traceFile("trace.csv", ios::trunc);
+    ofstream traceFile("../data/CSVs/trace.csv", ios::trunc);
     traceFile.close();
 
     // switches.csv
-    ofstream switchesFile("switches.csv", ios::trunc);
+    ofstream switchesFile("../data/CSVs/switches.csv", ios::trunc);
     switchesFile.close();
 
     // signals.csv
-    ofstream signalsFile("signals.csv", ios::trunc);
+    ofstream signalsFile("../data/CSVs/signals.csv", ios::trunc);
     signalsFile.close();
 
     // metrics.txt
-    ofstream metricsFile("metrics.txt", ios::trunc);
+    ofstream metricsFile("../data/CSVs/metrics.txt", ios::trunc);
     metricsFile.close();
 }
 

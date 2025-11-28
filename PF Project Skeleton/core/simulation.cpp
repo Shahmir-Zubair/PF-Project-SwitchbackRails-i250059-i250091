@@ -3,6 +3,7 @@
 #include "trains.h"
 #include "switches.h"
 #include "io.h"
+#include <string>
 #include <cstdlib>
 #include <ctime>
 #include <iostream>
@@ -11,28 +12,30 @@ using namespace std;
 // ============================================================================
 // SIMULATION.CPP - Implementation of main simulation logic
 // ============================================================================
-int TICK;
+
 // ----------------------------------------------------------------------------
 // INITIALIZE SIMULATION
 // ----------------------------------------------------------------------------
 
-void initializeSimulation() 
+void initializeSimulation(string filename) 
 {
     TICK = 0;
     
     initializeSimulationState();
     initializeLogFiles();
-    loadLevelFile();
+    loadLevelFile(filename);
 }
 
 // ----------------------------------------------------------------------------
 // SIMULATE ONE TICK
 // ----------------------------------------------------------------------------
 
-void simulateOneTick(int tick_no) {
+void simulateOneTick() {
 
-    cout<<"Tick: "<<tick_no<<endl;
+    cout<<"Tick: "<<TICK<<endl;
     print_grid();
+    spawnTrainsForTick();
+    
 }
 
 // ----------------------------------------------------------------------------
@@ -40,5 +43,8 @@ void simulateOneTick(int tick_no) {
 // ----------------------------------------------------------------------------
 
 bool isSimulationComplete() {
-
+    if(TICK == TRAINS[TRAIN_COUNT-1][0] + 1)
+        return true;
+    else
+        return false;
 }

@@ -53,4 +53,5 @@ void toggleSwitchState() {
 // Return the state for a given direction.
 // ----------------------------------------------------------------------------
 int getSwitchStateForDirection() {
+    return 0;
 }
