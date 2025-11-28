@@ -78,6 +78,9 @@ extern int** DEST_POINTS;
 // ----------------------------------------------------------------------------
 extern int TICK;
 extern int SPAWNED_TRAINS;
+extern int next_x[TRAIN_COUNT];
+extern int next_y[TRAIN_COUNT];
+extern int next_dir[TRAIN_COUNT];
 
 // ----------------------------------------------------------------------------
 // GLOBAL STATE: METRICS
@@ -97,6 +100,6 @@ extern std::string WEATHER, LVL_NAME;
 void allocateGrid();
 void allocateSwitchesTrains();
 void initializeSpawnDest();
-int initializeSimulationState();
+void initializeSimulationState();
 
 #endif

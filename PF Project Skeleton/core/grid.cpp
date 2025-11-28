@@ -12,7 +12,7 @@
 // Returns true if x,y are within bounds.
 // ----------------------------------------------------------------------------
 bool isInBounds(int r, int c) {
-    if((r < ROWS) && (c < COLS))
+    if((r < ROWS) && (r >= 0) && (c >= 0) && (c < COLS))
         return true;
     else
         return false;
@@ -37,7 +37,7 @@ bool isTrackTile(int r, int c) {
 // ----------------------------------------------------------------------------
 bool isSwitchTile(int r, int c) {
     char tile = GRID[r][c];
-    bool is_switch = (tile > 'A' && tile < 'Z');
+    bool is_switch = (tile >= 'A' && tile <= 'Z');
     return is_switch;
 }
 
@@ -77,3 +77,17 @@ bool isDestinationPoint(int r, int c) {
 bool toggleSafetyTile() {
     return true;
 }
+
+// Return the manhattan distance between two points
+int manhattanDistance(int x1, int y1, int x2, int y2) {
+    int dx = x1 - x2;
+    if (dx < 0) 
+        dx = -dx;
+
+    int dy = y1 - y2;
+    if (dy < 0) 
+        dy = -dy;
+
+    return dx + dy;
+}
+

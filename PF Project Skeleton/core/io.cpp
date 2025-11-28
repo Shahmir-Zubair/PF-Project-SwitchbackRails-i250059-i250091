@@ -76,8 +76,8 @@ bool loadLevelFile(string file_name)
     {   
         if (line == "SWITCHES:")
             break;
-        else if(line.size() > max_col)
-            max_col = line.size();
+        else if((int)line.size() > max_col)
+            max_col = (int)line.size();
         rows_count++;
     }
     ROWS = rows_count;
@@ -115,7 +115,7 @@ bool loadLevelFile(string file_name)
         getline(file, line);
         if(line == "SWITCHES:")
             break;
-        for(int c = 0; c < line.size(); c++) 
+        for(int c = 0; c < (int)line.size(); c++) 
         {
             GRID[r][c] = line[c];  
             if(isSpawnPoint(r, c))
@@ -142,7 +142,7 @@ bool loadLevelFile(string file_name)
         }
         if(switch_flag)
         {
-            if(line.size()==0)
+            if((int)line.size()==0)
                 break;
             else
                 SWITCH_COUNT++;
@@ -172,7 +172,7 @@ bool loadLevelFile(string file_name)
         int wordCount = 0;
         string current = "";
 
-        for (int j = 0; j < (int)line.size(); j++) 
+        for (int j = 0; j < (int)(int)line.size(); j++) 
         {
             char c = line[j];
             if (c == ' ') 
@@ -219,9 +219,9 @@ bool loadLevelFile(string file_name)
         int col = 0;
         string token;
         bool hasToken = false;
-        for (int j = 0; j <= line.size(); j++) 
+        for (int j = 0; j <= (int)line.size(); j++) 
         {
-            char c = (j < line.size() ? line[j] : ' '); // add trailing space to flush last token
+            char c = (j < (int)line.size() ? line[j] : ' '); // add trailing space to flush last token
             if (c == ' ') 
             {
                 if (token != "") 
