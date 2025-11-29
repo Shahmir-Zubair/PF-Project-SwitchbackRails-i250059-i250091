@@ -16,6 +16,7 @@ extern char** GRID;
 // ----------------------------------------------------------------------------
 // TRAIN CONSTANTS
 // ----------------------------------------------------------------------------
+extern const int DIR_NONE;
 extern const int DIR_UP;
 extern const int DIR_RIGHT;
 extern const int DIR_DOWN;
@@ -48,7 +49,8 @@ extern const int DIR_LEFT;
 // ----------------------------------------------------------------------------
 extern int** TRAINS;
 extern int TRAIN_COUNT;
-
+bool* TRAIN_CAN_MOVE;
+bool* TRAIN_CRASHED;
 // ----------------------------------------------------------------------------
 // GLOBAL STATE: SWITCHES (A-Z mapped to 0-25)
 // ----------------------------------------------------------------------------

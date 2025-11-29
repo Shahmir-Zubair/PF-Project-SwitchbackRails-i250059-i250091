@@ -22,6 +22,7 @@ char** GRID = NULL;
 // ----------------------------------------------------------------------------
 int** TRAINS = NULL;
 int TRAIN_COUNT = 0;
+const int DIR_NONE = -1;
 const int DIR_UP = 0;
 const int DIR_RIGHT = 1;
 const int DIR_DOWN = 2;
@@ -58,6 +59,8 @@ int SPAWNED_TRAINS=0;
 int* next_x = NULL;
 int* next_y = NULL;
 int* next_dir = NULL;
+bool* TRAIN_CAN_MOVE = NULL;
+bool* TRAIN_CRASHED = NULL;
 // ----------------------------------------------------------------------------
 // METRICS
 // ----------------------------------------------------------------------------
@@ -94,6 +97,14 @@ void allocateSwitchesTrains()
     {
         TRAINS[i] = new int[5]; // tick, x, y, dir, color
     }
+    TRAIN_CAN_MOVE = new bool[TRAIN_COUNT];
+    TRAIN_CRASHED   = new bool[TRAIN_COUNT];
+
+    for(int t=0; t < TRAIN_COUNT; t++)
+    {
+        TRAIN_CAN_MOVE[t] = false;
+        TRAIN_CRASHED[t] = false;
+    }
     LETTER = new char[SWITCH_COUNT];
     MODE = new string[SWITCH_COUNT];
     INIT = new int[SWITCH_COUNT];
@@ -104,10 +115,9 @@ void allocateSwitchesTrains()
     }
     STATE0 = new string[SWITCH_COUNT];
     STATE1 = new string[SWITCH_COUNT];
-
-    int next_x[TRAIN_COUNT];
-    int next_y[TRAIN_COUNT];
-    int next_dir[TRAIN_COUNT];
+    next_x  = new int[TRAIN_COUNT];
+    next_y  = new int[TRAIN_COUNT];
+    next_dir = new int[TRAIN_COUNT];
 }
 void initializeSpawnDest()
 {
@@ -144,6 +154,17 @@ void initializeSpawnDest()
 }
 void initializeSimulationState(){
     // Free old allocations if they exist
+
+    delete[] TRAIN_CAN_MOVE;
+    TRAIN_CAN_MOVE = nullptr;
+    delete[] TRAIN_CRASHED;
+    TRAIN_CRASHED = nullptr;
+    delete[] next_x; 
+    next_x = nullptr;
+    delete[] next_y; 
+    next_y = nullptr;
+    delete[] next_dir;
+    next_dir = nullptr;
 
     if(GRID) 
     {

@@ -125,7 +125,6 @@ bool loadLevelFile(string file_name)
         }
     }
     file.close();
-    cout<<"________________"<<endl;
 
     initializeSpawnDest();
 

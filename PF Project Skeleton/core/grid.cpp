@@ -78,16 +78,4 @@ bool toggleSafetyTile() {
     return true;
 }
 
-// Return the manhattan distance between two points
-int manhattanDistance(int x1, int y1, int x2, int y2) {
-    int dx = x1 - x2;
-    if (dx < 0) 
-        dx = -dx;
-
-    int dy = y1 - y2;
-    if (dy < 0) 
-        dy = -dy;
-
-    return dx + dy;
-}
 

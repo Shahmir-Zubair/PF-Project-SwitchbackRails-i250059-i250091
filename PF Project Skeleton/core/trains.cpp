@@ -9,6 +9,35 @@ using namespace std;
 // TRAINS.CPP - Train logic
 // ============================================================================
 
+// Return the manhattan distance between two points
+int manhattan(int x1, int y1, int x2, int y2) {
+    int dx = x1 - x2;
+    if (dx < 0) 
+        dx = -dx;
+
+    int dy = y1 - y2;
+    if (dy < 0) 
+        dy = -dy;
+
+    return dx + dy;
+}
+
+int getClosestDestinationManhattan(int x, int y)
+{
+    int shortest = 999999;
+
+    for(int d=0; d<DEST_COUNT; d++) {
+        int dx = DEST_POINTS[d][0];
+        int dy = DEST_POINTS[d][1];
+
+        int dist = manhattan(x, y, dx, dy);
+
+        if(dist < shortest)
+            shortest = dist;
+    }
+    return shortest;
+}
+
 // ----------------------------------------------------------------------------
 // SPAWN TRAINS FOR CURRENT TICK
 // ----------------------------------------------------------------------------
@@ -39,8 +68,8 @@ void spawnTrainsForTick()
 // ----------------------------------------------------------------------------
 bool determineNextPosition(int train_i) 
 {
-    int dir = getNextDirection(train_i);
-
+    next_dir[train_i] = getNextDirection(train_i);
+    dir = next_dir[train_i]
     if(dir == DIR_NONE)
         return false;
 
@@ -54,15 +83,15 @@ bool determineNextPosition(int train_i)
     if(dir == DIR_DOWN)  
         y++;
     if(dir == DIR_LEFT)  
-        y++;
+        x--;
 
     // bounds
-    if(isInBounds(x, y))
+    if(!isInBounds(x, y))
         return false;
 
     // store next position
-    TRAINS[train_i][1] = x;
-    TRAINS[train_i][2] = y;
+    next_x[train_i] = x;
+    next_y[train_i] = y;
 
     return true;
 }
@@ -92,8 +121,7 @@ int getNextDirection(int train_i) {
         return curr_direction;
 
     else if(curr_tile == '+')
-        return curr_direction;
-        // return getSmartDirectionAtCrossing();
+        return getSmartDirectionAtCrossing();
 
     else if(isSwitchTile(train_y, train_x))
         return curr_direction;
@@ -107,8 +135,50 @@ int getNextDirection(int train_i) {
 // ----------------------------------------------------------------------------
 // Choose best direction at '+' toward destination.
 // ----------------------------------------------------------------------------
-int getSmartDirectionAtCrossing() {
-    return 0;
+int getSmartDirectionAtCrossing(int train_i) {
+    int x = TRAINS[train_i][1];
+    int y = TRAINS[train_i][2];
+
+    int best_dir = DIR_NONE;
+    int best_dist = 999999;
+
+    // Try UP
+    if(isInBounds(x, y-1) && isTrackTile(GRID[y-1][x])) {
+        int dist = getClosestDestinationManhattan(x, y-1);
+        if(dist < best_dist) {
+            best_dist = dist;
+            best_dir = DIR_UP;
+        }
+    }
+
+    // Try RIGHT
+    if(isInBounds(x+1, y) && isTrackTile(GRID[y][x+1])) {
+        int dist = getClosestDestinationManhattan(x+1, y);
+        if(dist < best_dist) {
+            best_dist = dist;
+            best_dir = DIR_RIGHT;
+        }
+    }
+
+    // Try DOWN
+    if(isInBounds(x, y+1) && isTrackTile(GRID[y+1][x])) {
+        int dist = getClosestDestinationManhattan(x, y+1);
+        if(dist < best_dist) {
+            best_dist = dist;
+            best_dir = DIR_DOWN;
+        }
+    }
+
+    // Try LEFT
+    if(isInBounds(x-1, y) && isTrackTile(GRID[y][x-1])) {
+        int dist = getClosestDestinationManhattan(x-1, y);
+        if(dist < best_dist) {
+            best_dist = dist;
+            best_dir = DIR_LEFT;
+        }
+    }
+
+    return best_dir;
 }
 
 // ----------------------------------------------------------------------------
@@ -128,8 +198,19 @@ void determineAllRoutes() {
 // ----------------------------------------------------------------------------
 // Move trains; resolve collisions and apply effects.
 // ----------------------------------------------------------------------------
-void moveAllTrains() {
+void moveAllTrains()
+{
+    for(int i=0; i<SPAWNED_TRAINS; i++)
+    {
+        if(TRAIN_CRASHED[i])
+            continue;
 
+        if(TRAIN_CAN_MOVE[i])
+        {
+            TRAINS[i][1] = next_x[i];
+            TRAINS[i][2] = next_y[i];
+        }
+    }
 }
 
 // ----------------------------------------------------------------------------
@@ -137,8 +218,112 @@ void moveAllTrains() {
 // ----------------------------------------------------------------------------
 // Resolve same-tile, swap, and crossing conflicts.
 // ----------------------------------------------------------------------------
-void detectCollisions() {
-    
+void detectCollisions()
+{
+    // Mark all trains as initially allowed to move
+    for(int i=0; i<SPAWNED_TRAINS; i++)
+        TRAIN_CAN_MOVE[i] = true;
+
+    // ------------------------------------------------------------
+    // 1. SAME-TILE COLLISIONS
+    // ------------------------------------------------------------
+    for(int t1=0; t1<SPAWNED_TRAINS; t1++)
+    {
+        for(int t2=t1+1; t2<SPAWNED_TRAINS; t2++)
+        {
+            if(next_x[t1] == next_x[t2] && next_y[t1] == next_y[t2])
+            {
+                int d1 = getClosestDestinationManhattan(TRAINS[t1][1], TRAINS[t1][2]);
+                int d2 = getClosestDestinationManhattan(TRAINS[t2][1], TRAINS[t2][2]);
+
+                if(d1 > d2) {
+                    TRAIN_CAN_MOVE[t2] = false;
+                }
+                else if(d2 > d1) {
+                    TRAIN_CAN_MOVE[t1] = false;
+                }
+                else {
+                    // Equal → crash both
+                    TRAIN_CRASHED[t1] = true;
+                    TRAIN_CRASHED[t2] = true;
+                }
+            }
+        }
+    }
+
+    // ------------------------------------------------------------
+    // 2. HEAD-ON SWAP COLLISIONS (A→B and B→A)
+    // ------------------------------------------------------------
+    for(int t1=0; t1<SPAWNED_TRAINS; t1++)
+    {
+        for(int t2=t1+1; t2<SPAWNED_TRAINS; t2++)
+        {
+            int x1 = TRAINS[t1][1], y1 = TRAINS[t1][2];
+            int x2 = TRAINS[t2][1], y2 = TRAINS[t2][2];
+
+            // Swap if next positions cross
+            if(next_x[t1] == x2 && next_y[t1] == y2 &&
+               next_x[t2] == x1 && next_y[t2] == y1)
+            {
+                int d1 = getClosestDestinationManhattan(x1, y1);
+                int d2 = getClosestDestinationManhattan(x2, y2);
+
+                if(d1 > d2) {
+                    TRAIN_CAN_MOVE[t2] = false;
+                }
+                else if(d2 > d1) {
+                    TRAIN_CAN_MOVE[t1] = false;
+                }
+                else {
+                    TRAIN_CRASHED[t1] = true;
+                    TRAIN_CRASHED[t2] = true;
+                }
+            }
+        }
+    }
+
+    // ------------------------------------------------------------
+    // 3. CROSSING TILE ('+') COLLISIONS
+    // ------------------------------------------------------------
+    for(int t1=0; t1<SPAWNED_TRAINS; t1++)
+    {
+        // Check if target is a crossing
+        int nx = next_x[t1];
+        int ny = next_y[t1];
+
+        if(GRID[ny][nx] == '+')
+        {
+            // Compare with all others entering same crossing
+            for(int t2=t1+1; t2<SPAWNED_TRAINS; t2++)
+            {
+                if(next_x[t2] == nx && next_y[t2] == ny)
+                {
+                    int d1 = getClosestDestinationManhattan(TRAINS[t1][1], TRAINS[t1][2]);
+                    int d2 = getClosestDestinationManhattan(TRAINS[t2][1], TRAINS[t2][2]);
+
+                    if(d1 > d2) {
+                        TRAIN_CAN_MOVE[t2] = false;
+                    }
+                    else if(d2 > d1) {
+                        TRAIN_CAN_MOVE[t1] = false;
+                    }
+                    else {
+                        TRAIN_CRASHED[t1] = true;
+                        TRAIN_CRASHED[t2] = true;
+                    }
+                }
+            }
+        }
+    }
+
+    // ------------------------------------------------------------
+    // 4. FINALIZE MOVES: Prevent crashed trains from moving
+    // ------------------------------------------------------------
+    for(int i=0; i<SPAWNED_TRAINS; i++)
+    {
+        if(TRAIN_CRASHED[i])
+            TRAIN_CAN_MOVE[i] = false;  // crashed → no movement
+    }
 }
 
 // ----------------------------------------------------------------------------
