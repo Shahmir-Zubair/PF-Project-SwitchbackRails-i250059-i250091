@@ -65,6 +65,7 @@ extern int** SWITCH_COUNTER_DIR;
 extern int* SWITCH_COUNTER_GLOBAL;  
 extern int* SWITCH_FLIP_QUEUE;
 extern int* SWITCH_STATE;
+extern int** SWITCH_STATE_DIR;
 
 // ----------------------------------------------------------------------------
 // GLOBAL STATE: SPAWN POINTS

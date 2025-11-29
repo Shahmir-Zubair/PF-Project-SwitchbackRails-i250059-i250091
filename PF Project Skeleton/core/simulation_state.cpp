@@ -42,6 +42,7 @@ int** SWITCH_COUNTER_DIR = NULL;
 int* SWITCH_COUNTER_GLOBAL = NULL;
 int* SWITCH_FLIP_QUEUE = NULL;
 int* SWITCH_STATE = NULL;
+int** SWITCH_STATE_DIR = NULL;
 // ----------------------------------------------------------------------------
 // SPAWN AND DESTINATION POINTS
 // ----------------------------------------------------------------------------

@@ -106,7 +106,8 @@ void updateSignalLights() {
 // ----------------------------------------------------------------------------
 // Manually toggle a switch state.
 // ----------------------------------------------------------------------------
-void toggleSwitchState() {
+void toggleSwitchState(int sindex) {
+    SWITCH_STATE[sindex] = 1 - SWITCH_STATE[sindex];
 }
 
 // ----------------------------------------------------------------------------
@@ -114,6 +115,13 @@ void toggleSwitchState() {
 // ----------------------------------------------------------------------------
 // Return the state for a given direction.
 // ----------------------------------------------------------------------------
-int getSwitchStateForDirection() {
-    return 0;
+int getSwitchStateForDirection(int sindex, int direction) {
+    if (MODE[sindex] == "PER_DIR") 
+    {
+        return SWITCH_STATE_DIR[sindex][direction];
+    } 
+    else 
+    {
+        return SWITCH_STATE[sindex];
+    }
 }
