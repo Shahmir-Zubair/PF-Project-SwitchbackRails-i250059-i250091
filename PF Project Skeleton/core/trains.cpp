@@ -69,7 +69,7 @@ void spawnTrainsForTick()
 bool determineNextPosition(int train_i) 
 {
     next_dir[train_i] = getNextDirection(train_i);
-    dir = next_dir[train_i]
+    int dir = next_dir[train_i]
     if(dir == DIR_NONE)
         return false;
 
